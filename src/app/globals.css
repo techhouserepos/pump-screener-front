@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* --background: 260 41.9% 16.9%; */
+    --background: 199 80% 4%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    /* --primary: 263.4 70% 50.4%; */
+    --primary: 164 82% 78%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    /* --ring: 263.4 70% 50.4%; */
+    --ring: 224 41% 53%;
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.highlight {
+  position: relative;
+}
+
+.highlight::after {
+  opacity: 0;
+}
+
+.highlight::after {
+  transition: opacity 0.2s;
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  filter: blur(15px);
+  background: linear-gradient(95deg, #7baff3, #3f8ef6, #0b2c56, #4e70d0);
+  background-size: 200% 200%;
+  animation: animateGlow 5s linear infinite;
+}
+
+.highlightSelected {
+  z-index: 5;
+}
+
+.highlightSelected::after {
+  opacity: 0.5 !important;
+}
+
+.highlight-logo {
+  position: relative;
+  width: 300px; /* Define a largura, se necessário */
+  height: 300px; /* Define a altura, se necessário */
+  border-radius: 9999px; /* Para tornar a div arredondada */
+}
+
+.highlight-logo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  filter: blur(14px);
+  background: linear-gradient(95deg, #7baff3, #3f8ef6, #0b2c56, #4e70d0);
+  background-size: 200% 200%;
+  animation: animateGlow 5s infinite;
+  border-radius: 9999px; /* Para manter o efeito arredondado */
+}
+
+.highlightSelected::after {
+  opacity: 0.5 !important;
+}
+
+.icon-color-custom {
+  filter: brightness(0) saturate(100%) invert(61%) sepia(40%) saturate(425%)
+    hue-rotate(132deg) brightness(101%) contrast(110%);
+}
+
+@keyframes animateGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+
+
+/* Card Animation */
+
+.wrapper .card {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+  
+.wrapper .card::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: calc(100% + 300px);
+  background: linear-gradient(90deg, black calc(30%), #99f5dc calc(40%), #99f5dc calc(60%), black calc(70%));
+  z-index: -2;
+  animation: rotate 6s linear infinite;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.wrapper .card::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  border-radius: 10px;
+  background: #020d12;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+.wrapper .card.active, .wrapper .card:hover {
+  border-color: #dcb8f050;
+  box-shadow: 0 0 30px #c9a8e090, 0 0 2px #99f5dc inset;
+}
+.wrapper .card.active::before, .wrapper .card:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+.wrapper .card.active p {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+@keyframes rotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
