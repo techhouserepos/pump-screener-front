@@ -278,7 +278,11 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
             <div className='flex flex-row'> <h3 className='text-white ml-5'>CA: {token.mint} </h3> <FaCopy className='pt-1 ml-1 text-primary' /></div>
             <h3 className='text-white ml-5'>Market Cap: <span className='text-primary'>{`$${Number(bondingCurve?.marketCapUSD || token.usd_market_cap).toLocaleString()}`}</span></h3>
           </div>
-          <LightweightChart tokenMint={token.mint} onUpdate={token.complete ? undefined : setGetBondingCurve} />
+          <LightweightChart
+            tokenMint={token.mint}
+            onUpdate={token.complete ? undefined : setGetBondingCurve}
+            inRaydium={token.complete}
+          />
           <div ref={topRef} className="mb-4 flex justify-start">
             <span className="text-sm bg-transparent text-white mb-2 cursor-pointer" onClick={scrollToBottom}>
               [scroll down]
