@@ -294,7 +294,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
             <h3 className='text-white ml-5'>Market Cap: <span className='text-primary'>{`$${Number(bondingCurve?.marketCapUSD || token.usd_market_cap).toLocaleString()}`}</span></h3>
           </div>
           {copied && <p className="text-green-500 text-sm mt-2">Copied to Clipboard</p>}
-          <LightweightChart tokenMint={token.mint} onUpdate={token.complete ? undefined : setGetBondingCurve} />
+          <LightweightChart tokenMint={token.mint} onUpdate={token.complete ? undefined : setGetBondingCurve} inRaydium={token.complete}/>
           <div ref={topRef} className="mb-4 flex justify-start">
             <span className="text-sm bg-transparent text-white mb-2 cursor-pointer" onClick={scrollToBottom}>
               [scroll down]
@@ -356,6 +356,34 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
                 <p className='text-sm pt-3'>there are {Math.floor((bondingCurve?.realTokenReserves || 0) / 10 ** 6).toLocaleString()} tokens still available for sale in the bonding curve and there is <span className='text-primary'>{((bondingCurve?.realSolReserves || 0) / 10 ** 9).toLocaleString()}</span> SOL in the bonding curve.</p>
               </>
             )}
+            {
+              !!dexBannerSrc || !!dexBoosts ? (
+                <div className="mb-3 mt-8">
+                  <div className="flex flex-row gap-2 items-center">
+                    <img
+                      src="/dex_icon.png"
+                      alt="dexscreener_icon"
+                      width={24}
+                      height={24}
+                    />
+                    <HiSpeakerphone color={dexBannerSrc ? "green" : "red"} />
+                    <div className="flex flex-row items-center">
+                      <AiFillThunderbolt color="yellow" />
+                      <span className="">{dexBoosts}</span>
+                    </div>
+                  </div>
+                  {dexBannerSrc && (
+                    <div className="w-full">
+                      <img
+                        src={dexBannerSrc}
+                        alt="dex banner"
+                        className="w-64 h-auto mt-2"
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : null
+            }
           </div>
 
           { createdTokens.length && (
