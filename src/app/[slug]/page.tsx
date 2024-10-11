@@ -337,6 +337,19 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
                 className="h-5 w-5 hover:opacity-70"
               />
             </a>
+            {!!token.complete && (
+              <a
+                href={`https://gmgn.ai/sol/token/${token.mint}`}
+                target="_blank"
+                rel="nofollow"
+              >
+                <img
+                  src="/raydium.png"
+                  alt="Raydium"
+                  className="h-5 w-5 hover:opacity-70"
+                />
+              </a>              
+            )}
           </div>
 
           <div className="w-full block pt-6">
