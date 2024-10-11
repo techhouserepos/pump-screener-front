@@ -73,6 +73,8 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
     likedIconName: null,
   });
 
+  const [copied, setCopied] = useState(false); // Estado para controlar o texto de cópia
+
   const topRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -235,6 +237,16 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(token?.mint || '');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
+
   const handleIconClick = (iconName: string) => {
     if (selectedIcon === iconName) {
       setSelectedIcon(null);
@@ -275,14 +287,14 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
           <div className="flex flex-row text-sm mb-2">
             <h3 className='text-white'>Token: {token.name}</h3>
             <h3 className='text-white ml-5'>Ticker: ${token.symbol}</h3>
-            <div className='flex flex-row'> <h3 className='text-white ml-5'>CA: {token.mint} </h3> <FaCopy className='pt-1 ml-1 text-primary' /></div>
+            <div className='flex flex-row'> 
+              <h3 className='text-white ml-5'>CA: {token.mint}</h3> 
+              <FaCopy className='pt-1 ml-1 text-primary cursor-pointer' onClick={handleCopy} />
+            </div>
             <h3 className='text-white ml-5'>Market Cap: <span className='text-primary'>{`$${Number(bondingCurve?.marketCapUSD || token.usd_market_cap).toLocaleString()}`}</span></h3>
           </div>
-          <LightweightChart
-            tokenMint={token.mint}
-            onUpdate={token.complete ? undefined : setGetBondingCurve}
-            inRaydium={token.complete}
-          />
+          {copied && <p className="text-green-500 text-sm mt-2">Copied to Clipboard</p>}
+          <LightweightChart tokenMint={token.mint} onUpdate={token.complete ? undefined : setGetBondingCurve} />
           <div ref={topRef} className="mb-4 flex justify-start">
             <span className="text-sm bg-transparent text-white mb-2 cursor-pointer" onClick={scrollToBottom}>
               [scroll down]
@@ -325,19 +337,6 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
                 className="h-5 w-5 hover:opacity-70"
               />
             </a>
-            {!!token.complete && !!token.raydium_pool && (
-              <a
-                href={`https://geckoterminal.com/solana/pools/${token.raydium_pool}`}
-                target="_blank"
-                rel="nofollow"
-              >
-                <img
-                  src="/raydium.png"
-                  alt="Raydium"
-                  className="h-5 w-5 hover:opacity-70"
-                />
-              </a>              
-            )}
           </div>
 
           <div className="w-full block pt-6">
@@ -358,43 +357,6 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
               </>
             )}
           </div>
-          {
-            !!dexBannerSrc || !!dexBoosts ? (
-              <div className="mb-3 mt-8">
-                <div className="flex flex-row gap-2 items-center">
-                  <img
-                    src="/dex_icon.png"
-                    alt="dexscreener_icon"
-                    width={24}
-                    height={24}
-                  />
-                  <HiSpeakerphone color={dexBannerSrc ? "green" : "red"} />
-                  <div className="flex flex-row items-center">
-                    <AiFillThunderbolt color="yellow" />
-                    <span className="">{dexBoosts}</span>
-                  </div>
-                </div>
-                {dexBannerSrc && (
-                  <div className="w-full">
-                    <img
-                      src={dexBannerSrc}
-                      alt="dex banner"
-                      className="w-64 h-auto mt-2"
-                    />
-                  </div>
-                )}
-              </div>
-            ) : null
-          }
-          {/* {!!dexBannerSrc && (
-            <div className="w-full">
-              <img
-                src={dexBannerSrc}
-                alt="dex banner"
-                className="w-64 h-auto mb-3 mt-8"
-              />
-            </div>
-          )} */}
 
           { createdTokens.length && (
             <div className="w-full block pt-6">
