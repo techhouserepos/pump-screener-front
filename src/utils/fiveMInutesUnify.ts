@@ -10,8 +10,8 @@ function getNewCandleStick(): CandleStick {
     low: 0,
     value: 0,
     volume: 0,
-    is_1_min: true,
-    is_5_min: true,
+    // is_1_min: true,
+    // is_5_min: true,
   };
 }
 
@@ -71,8 +71,8 @@ export default function fiveMinutesUnify(candles: CandleStick[]) {
             newCandle.low = Math.min(newCandle.low || Infinity, candle.low);
             newCandle.volume += candle.volume;
             newCandle.value = newCandle.volume;
-            newCandle.is_1_min = candle.is_1_min;
-            newCandle.is_5_min = candle.is_5_min;
+            // newCandle.is_1_min = candle.is_1_min;
+            // newCandle.is_5_min = candle.is_5_min;
           });
           newCandle.close /= map[hour].length;
           newCandle.open /= map[hour].length;
