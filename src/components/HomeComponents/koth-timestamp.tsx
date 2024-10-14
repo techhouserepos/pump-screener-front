@@ -7,7 +7,7 @@ import { FaTelegramPlane } from "react-icons/fa";
 import { GlobeIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
 import './splide-customization.css';
 import MarketCap from './market-cap';
-import { backend } from '@/services/api';
+import { backend, getApiToken } from '@/services/api';
 
 interface Token {
   mint: string;
@@ -27,7 +27,7 @@ const KothTimestamp = () => {
 
   useEffect(() => {
     const fetchTokens = () => {
-      backend().get<Token[]>('/last_koth')
+      backend().get<Token[]>('/last_koth', { headers: { api_token: getApiToken() } })
         .then(response => {
           const tokenData = response.data.map((token) => ({
             logo: token.logo,
