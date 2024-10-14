@@ -28,7 +28,7 @@ const RecentTokens = () => {
 
   useEffect(() => {
     const fetchTokens = () => {
-      axios.get<Token[]>('/api/coins?offset=0&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false')
+      axios.get<Token[]>('/pumpfun/coins?offset=0&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false')
         .then(response => {
           const tokenData = response.data.map((token) => ({
             image_uri: token.image_uri,

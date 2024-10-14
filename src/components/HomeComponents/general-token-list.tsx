@@ -26,7 +26,7 @@ const GeneralTokens = () => {
   useEffect(()=>{
     const tokensPerPage = 50;
     const offset = currentPage * tokensPerPage;
-      axios.get<Token[]>(`/api/coins?offset=${offset}&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false`)
+      axios.get<Token[]>(`/pumpfun/coins?offset=${offset}&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false`)
       .then(response =>{
           const tokenData = response.data.map((token)=>({
               image_uri: token.image_uri,

@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import { FaTelegramPlane } from "react-icons/fa";
 import { GlobeIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
 import './splide-customization.css';
 import MarketCap from './market-cap';
+import { backend } from '@/services/api';
 
 interface Token {
   mint: string;
@@ -27,7 +27,7 @@ const KothTimestamp = () => {
 
   useEffect(() => {
     const fetchTokens = () => {
-      axios.get<Token[]>('/api/last_koth')
+      backend().get<Token[]>('/last_koth')
         .then(response => {
           const tokenData = response.data.map((token) => ({
             logo: token.logo,

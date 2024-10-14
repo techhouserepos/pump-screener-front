@@ -1,5 +1,6 @@
 // src/services/tradingViewDataFeed.ts
 import axios from 'axios';
+import { backend } from './api';
 
 interface PumpData {
   open: number;
@@ -33,7 +34,7 @@ export interface CandleStick {
 
 export async function fetchPumpCandles(tokenMint: string) {
   try {
-    const response = await axios.get<PumpData[]>(`/api/candlesticks/${tokenMint}?offset=0&limit=1000&timeframe=5`);
+    const response = await axios.get<PumpData[]>(`/pumpfun/candlesticks/${tokenMint}?offset=0&limit=1000&timeframe=5`);
     return response.data.map((item): CandleStick => ({
       time: item.timestamp, // O lightweight-charts aceita timestamp em segundos
       open: item.open,
@@ -52,7 +53,7 @@ export async function fetchPumpCandles(tokenMint: string) {
 
 export async function fetchGmgnCandles(mint: string, from: number, to: number) {
   try {
-    const response = await axios.get<GmgnData[]>(`/api/trades/`, { params: { mint, from, to } });
+    const response = await backend().get<GmgnData[]>(`/candlesticks`, { params: { mint, from, to } });
     return response.data.map((item): CandleStick => ({
       time: Number(Math.round(item.time / 1000)), // O lightweight-charts aceita timestamp em segundos
       open: parseFloat(item.open),

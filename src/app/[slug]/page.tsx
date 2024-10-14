@@ -7,11 +7,12 @@ import unprotectLinkOfCFIPFS from '@/utils/unprotectLinkOfCFIPFS';
 import { FaTelegramPlane, FaRocket, FaFire, FaPoop, FaEye, FaCopy } from "react-icons/fa";
 import Loading from '@/components/page/loading';
 import { GlobeIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
-import { BondingCurveResponse } from '../../../pages/api/bonding_curve';
+import { BondingCurveResponse } from '../../../pages/api/backend/bonding_curve';
 import { delay } from '@/services/utils';
 import { DexTokensResponse } from '../../../pages/api/dex_tokens';
 import { HiSpeakerphone } from 'react-icons/hi';
 import { AiFillThunderbolt } from 'react-icons/ai';
+import { api, backend } from '@/services/api';
 
 interface CreatedToken {
   mint: string;
@@ -83,7 +84,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
 
     async function getDexBanner() {
       try {
-        const { data } = await axios.get<{ src: string }>("/api/dex_banner", { params: { mint: params.slug } })
+        const { data } = await backend().get<{ src: string }>("/dex_banner", { params: { mint: params.slug } })
         if (data.src) {
           setDexBannerSrc(data.src);
         }
@@ -94,7 +95,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
 
     async function getDexBoosts() {
       try {
-        const { data } = await axios.get<DexTokensResponse>("/api/dex_tokens", { params: { mint: params.slug } });
+        const { data } = await api().get<DexTokensResponse>("/dex_tokens", { params: { mint: params.slug } });
         const pair = data.pairs.find(({ chainId, dexId }) => chainId === "solana" && dexId === "raydium");
         if (pair?.boosts.active) {
           setDexBoosts(pair.boosts.active);
@@ -106,7 +107,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
 
     async function fetchToken() {
       try {
-        const { data } = await axios.get<TokenData>(`/api/coins/${params.slug}`);
+        const { data } = await axios.get<TokenData>(`/pumpfun/coins/${params.slug}`);
         data.image_uri = unprotectLinkOfCFIPFS(data.image_uri);
         setToken(data);
         return data;
@@ -139,7 +140,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
   useEffect(() => {
     if (getBondingCurve) {
       setGetBondingCurve(false);
-      axios.get<BondingCurveResponse>("/api/bonding_curve", { headers: { mint: params.slug } })
+      backend().get<BondingCurveResponse>("/bonding_curve", { headers: { mint: params.slug } })
         .then(({ data }) => setBondingCurve(data))
         .catch((err) => console.error("Fail fetch bonding curve", err));
     }
@@ -148,7 +149,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
   useEffect(() => {
     if (token && getCreatedTokens) {
       setGetCreatedTokens(false);
-      axios.get<CreatedToken[]>(`/api/coins/user-created-coins/${token.creator}?offset=0&limit=10&includeNsfw=false`)
+      axios.get<CreatedToken[]>(`/pumpfun/coins/user-created-coins/${token.creator}?offset=0&limit=10&includeNsfw=false`)
         .then(({ data }) => {
           setCreatedTokens(data.toSorted((a, b) => b.created_timestamp - a.created_timestamp));
         })
@@ -166,7 +167,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
       const waitIntervalMs = 1000;
       const allBuyers = new Set<string>();
       while (keepFetching) {
-        await axios.get<Trade[]>(`/api/trades/all/${params.slug}?limit=${limit}&offset=${offset}&minimumSize=0`)
+        await axios.get<Trade[]>(`/pumpfun/trades/all/${params.slug}?limit=${limit}&offset=${offset}&minimumSize=0`)
           .then(({ data }) => {
             if (data.length) {
               data.forEach((trade) => {
@@ -193,7 +194,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
     if (updateBuyers) {
       const fetchRecentTrades = async () => {
         try {
-          const { data } = await axios.get<Trade[]>(`/api/trades/all/${params.slug}?limit=50&offset=0&minimumSize=0`);
+          const { data } = await axios.get<Trade[]>(`/pumpfun/trades/all/${params.slug}?limit=50&offset=0&minimumSize=0`);
           const buyersSet = new Set<string>();
           for (let i = 0; i < data.length; ++i) {
             buyersSet.add(data[i].user);
@@ -215,7 +216,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
       localStorage.setItem(process.env.USER_LIKE_TOKEN_ID as string, crypto.randomUUID());
     }
     const getLikes = async () => {
-      axios.get<LikeMap>("/api/likes", { params: { mint: params.slug, userLikeToken: localStorage.getItem(process.env.USER_LIKE_TOKEN_ID as string) }})
+      backend().get<LikeMap>("/likes", { params: { mint: params.slug, userLikeToken: localStorage.getItem(process.env.USER_LIKE_TOKEN_ID as string) }})
       .then(({ data }) => {
         if (data.countMap) {
           setClickCounts(data);
@@ -253,7 +254,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
     } else {
       setSelectedIcon(iconName);
     }
-    axios.post<LikeMap>("/api/likes", {
+    backend().post<LikeMap>("/likes", {
       tokenMint: params.slug,
       userLikeToken: localStorage.getItem(process.env.USER_LIKE_TOKEN_ID as string),
       iconName,

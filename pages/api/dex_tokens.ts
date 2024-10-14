@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import secureHandler, { Handle } from '../../middlewares/secure_handler';
 
 export interface DexTokensPair {
   chainId: string;
@@ -13,7 +13,7 @@ export interface DexTokensResponse {
   pairs: DexTokensPair[]
 }
 
-export default async function GET(req: NextApiRequest, res: NextApiResponse) {
+const dexTokens: Handle = async (req, res) => {
   try {
     const { mint } = req.query;
     const response = await axios.get<DexTokensResponse>(`https://api.dexscreener.com/latest/dex/tokens/${mint}`);
@@ -22,3 +22,5 @@ export default async function GET(req: NextApiRequest, res: NextApiResponse) {
     res.status(500).json({ message: "Failed fetch dex token", error });
   }
 }
+
+export default secureHandler(dexTokens);

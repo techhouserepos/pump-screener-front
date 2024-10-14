@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import axios from 'axios';
 import '@splidejs/react-splide/css';
 import { FaTelegramPlane } from "react-icons/fa";
 import { GlobeIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
 import './splide-customization.css';
 import MarketCap from './market-cap';
+import { backend } from '@/services/api';
 
 interface Token {
   image_uri?: string;
@@ -27,7 +27,7 @@ const MoreCloseToRaydium = () => {
 
   useEffect(() => {
     const fetchTokens = () => {
-      axios.get<Token[]>('/api/usd_market_cap')
+      backend().get<Token[]>('/usd_market_cap')
         .then(response => {
           const tokenData = response.data.map((token) => ({
             logo: token.logo,

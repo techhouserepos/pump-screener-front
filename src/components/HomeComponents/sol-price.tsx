@@ -8,7 +8,7 @@ const SolPrice: React.FC = () => {
   useEffect(() => {
     const fetchSolPrice = async () => {
       try {
-        const response = await axios.get('/api/sol-price');
+        const response = await axios.get('/pumpfun/sol-price');
         setSolPrice(response.data.solPrice);
       } catch (error) {
         console.error('Error fetching Sol price:', error);

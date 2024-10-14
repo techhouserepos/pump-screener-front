@@ -1,10 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import secureHandler, { Handle } from '../../../middlewares/secure_handler';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const likes: Handle = async (req, res) => {
   if (req.method === "POST") {
     try {
       const response = await axios.post('http://localhost:3001/likes', req.body);
@@ -22,3 +19,4 @@ export default async function handler(
   }
 }
 
+export default secureHandler(likes);

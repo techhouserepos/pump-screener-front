@@ -9,7 +9,7 @@ const CommentSection: React.FC<{ tokenAddress: string, creator: string }> = ({ t
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const commentsData = await axios.get(`/api/replies/${tokenAddress}?limit=1000&offset=0`);
+        const commentsData = await axios.get(`/pumpfun/replies/${tokenAddress}?limit=1000&offset=0`);
         setComments(commentsData.data.map((comment: Comment) => ({
           ...comment,
           profile_image: unprotectLinkOfCFIPFS(comment.profile_image),

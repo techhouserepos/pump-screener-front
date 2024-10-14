@@ -10,7 +10,7 @@ const TradeSection: React.FC<{ creator: string, tokenAddress: string }> = ({ cre
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tradesData = await axios.get(`/api/trades/all/${tokenAddress}?limit=${limit}&offset=${offset}&minimumSize=0`);
+        const tradesData = await axios.get(`/pumpfun/trades/all/${tokenAddress}?limit=${limit}&offset=${offset}&minimumSize=0`);
         setTrades(tradesData.data);
       } catch (error) {
         console.error('Error fetching trades:', error);
