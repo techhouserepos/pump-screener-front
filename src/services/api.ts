@@ -25,6 +25,7 @@ export function getApiToken() {
     location: window.location.href,
     created: Date.now(),
   }
+  console.log("api key", process.env.API_KEY)
   return AES.encrypt(JSON.stringify(payload), process.env.API_KEY || "secret").toString();
 }
 
