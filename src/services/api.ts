@@ -30,9 +30,9 @@ export function getApiToken() {
 }
 
 export function backend() {
-  return axios.create({ baseURL: "/api/backend", headers: { api_token: getApiToken() } });
+  return axios.create({ baseURL: "/api/backend", headers: { authorization: getApiToken() } });
 }
 
 export function api() {
-  return axios.create({ baseURL: "/api", headers: { api_token: getApiToken() } });
+  return axios.create({ baseURL: "/api", headers: { authorization: getApiToken() } });
 }

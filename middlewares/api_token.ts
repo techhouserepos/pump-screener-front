@@ -10,12 +10,9 @@ export default function apiTokenMiddleware(
   req: NextApiRequest,
 ) {
   try {
-    const { api_token } = req.headers;
-    console.log("api token", api_token)
-    console.log("origin", process.env.ORIGIN)
-    if (typeof api_token === "string" && api_token) {
-      const decrypt = AES.decrypt(api_token, process.env.API_KEY || "secret").toString(enc.Utf8);
-      console.log("decrypt", decrypt)
+    const { authorization } = req.headers;
+    if (typeof authorization === "string" && authorization) {
+      const decrypt = AES.decrypt(authorization, process.env.API_KEY || "secret").toString(enc.Utf8);
       if (decrypt) {
         const parsed: ApiToken = JSON.parse(decrypt);
         return Date.now() < parsed.created + 5000 && parsed.location.startsWith(process.env.ORIGIN || "http://localhost:3000/");
