@@ -12,6 +12,8 @@ import { delay } from '@/services/utils';
 import { DexTokensResponse } from '../../../pages/api/dex_tokens';
 import { HiSpeakerphone } from 'react-icons/hi';
 import { AiFillThunderbolt } from 'react-icons/ai';
+import { MdOutlineCamera } from 'react-icons/md';
+import { SiGooglelens } from 'react-icons/si';
 
 interface CreatedToken {
   mint: string;
@@ -280,9 +282,7 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
 
   return (
     <div className="relative flex flex-col items-center justify-center max-w-7xl mx-auto pt-1">
-      {/* <BannerTop /> */}
       <div className="w-full justify-center gap-10 mt-10 grid grid-cols-12">
-        {/* Chart Column */}
         <div className="w-full h-full flex-grow col-span-9">
           <div className="flex flex-row text-sm mb-2">
             <h3 className='text-white'>Token: {token.name}</h3>
@@ -306,6 +306,17 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
         {/* Token Info */}
         <div className="col-span-3 order-2 flex flex-col">
           <img src={token.image_uri || ""} alt={token.name} className="w-64 h-auto mb-4" />
+
+          {/* Google Lens Icon Reference */}
+          <a
+            href={`https://lens.google.com/uploadbyurl?url=${token.image_uri}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex justify-left mb-4 h-6 w-6"
+          >
+            <img src='/7123028_lens_google_icon.png' alt='Google Lens' className="cursor-pointer hover:opacity-50 transition-opacity" />
+          </a>
+
           <h1 className="text-xl font-medium">{token.name}</h1>
           <h2 className='text-xl font-semibold text-primary'>${token.symbol}</h2>
           <p className="text-sm text mt-2">{token.description}</p>
@@ -337,124 +348,9 @@ export default function TokenPage({ params }: { params: { slug: string } }): JSX
                 className="h-5 w-5 hover:opacity-70"
               />
             </a>
-            {!!token.complete && (
-              <a
-                href={`https://gmgn.ai/sol/token/${token.mint}`}
-                target="_blank"
-                rel="nofollow"
-              >
-                <img
-                  src="/raydium.png"
-                  alt="Raydium"
-                  className="h-5 w-5 hover:opacity-70"
-                />
-              </a>              
-            )}
-          </div>
-
-          <div className="w-full block pt-6">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-base">Bonding Curve Progress:</h3>
-              <span className="text-md text-left text-gray-400">{`${token.complete ? 100 : bondingCurve?.percent || 0}%`}</span>
-            </div>
-            <div className="w-full h-4 bg-gray-800 rounded-full">
-              <div 
-                className="h-full bg-green-400 rounded-full transition-all duration-500 ease-in-out" 
-                style={{ width: `${token.complete ? 100 : bondingCurve?.percent || 0}%` }}
-              ></div>
-            </div>
-            {bondingCurve && (
-              <>
-                <p className='text-sm pt-5'>When the market cap reaches <span className='text-primary'>{`$${Number(Math.round(bondingCurve?.finalMarketCapUSD || 0)).toLocaleString()}`}</span> all the liquidity from the bonding curve will be deposited into Raydium and burned. progression increases as the price goes up.</p>
-                <p className='text-sm pt-3'>there are {Math.floor((bondingCurve?.realTokenReserves || 0) / 10 ** 6).toLocaleString()} tokens still available for sale in the bonding curve and there is <span className='text-primary'>{((bondingCurve?.realSolReserves || 0) / 10 ** 9).toLocaleString()}</span> SOL in the bonding curve.</p>
-              </>
-            )}
-            {
-              !!dexBannerSrc || !!dexBoosts ? (
-                <div className="mb-3 mt-8">
-                  <div className="flex flex-row gap-2 items-center">
-                    <img
-                      src="/dex_icon.png"
-                      alt="dexscreener_icon"
-                      width={24}
-                      height={24}
-                    />
-                    <HiSpeakerphone color={dexBannerSrc ? "green" : "red"} />
-                    <div className="flex flex-row items-center">
-                      <AiFillThunderbolt color="yellow" />
-                      <span className="">{dexBoosts}</span>
-                    </div>
-                  </div>
-                  {dexBannerSrc && (
-                    <div className="w-full">
-                      <img
-                        src={dexBannerSrc}
-                        alt="dex banner"
-                        className="w-64 h-auto mt-2"
-                      />
-                    </div>
-                  )}
-                </div>
-              ) : null
-            }
-          </div>
-
-          { createdTokens.length && (
-            <div className="w-full block pt-6">
-              <a 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                href={`https://pump.fun/profile/${createdTokens[createdTokens.length - 1].creator}`}
-                className="text-lg font-semibold text-white hover:text-blue-800 transition-colors underline"
-              >
-                { `${createdTokens[createdTokens.length - 1].username || createdTokens[createdTokens.length - 1].creator.slice(0, 6)} (dev)` }
-              </a>
-              {
-                createdTokens.length > 1 ? (
-                  <>
-                    <p className="text-md text-white-600 mt-4">Other coins created by this developer:</p>
-                    <ul className="mt-2 space-y-2 border-t border-gray-200 pt-4 flex-col">
-                      { createdTokens.filter((token) => token.mint != params.slug).map((token) => (
-                        <li key={token.mint} className="text-gray-700">
-                          <a href={`/${token.mint}`} className="no-underline hover:underline flex-row hover:text-white transition-colors">
-                            { token.name }
-                          </a>
-                        </li>
-                      )) }
-                    </ul>
-                  </>
-                ) : (
-                  <p className="text-md text-white-600 mt-4 border-b border-gray-200 pb-4">This is the first coin created by the developer.</p>
-                )
-              }
-            </div>
-          )}
-
-          <div className="flex w-full justify-around items-center mt-4">
-            <div className="flex flex-col items-center cursor-pointer" onClick={() => handleIconClick('rocket')}>
-              <FaRocket size={24} className={selectedIcon === 'rocket' ? 'text-blue-500' : 'text-gray-500'} />
-              <span className="text-xs text-gray-700">{clickCounts.countMap?.rocket || 0}</span>
-            </div>
-            <div className="flex flex-col items-center cursor-pointer" onClick={() => handleIconClick('fire')}>
-              <FaFire size={24} className={selectedIcon === 'fire' ? 'text-red-500' : 'text-gray-500'} />
-              <span className="text-xs text-gray-700">{clickCounts.countMap?.fire || 0}</span>
-            </div>
-            <div className="flex flex-col items-center cursor-pointer" onClick={() => handleIconClick('poop')}>
-              <FaPoop size={24} className={selectedIcon === 'poop' ? 'text-yellow-500' : 'text-gray-500'} />
-              <span className="text-xs text-gray-700">{clickCounts.countMap?.poop || 0}</span>
-            </div>
-            <div className="flex flex-col items-center cursor-pointer" onClick={() => handleIconClick('eye')}>
-              <FaEye size={24} className={selectedIcon === 'eye' ? 'text-green-500' : 'text-gray-500'} />
-              <span className="text-xs text-gray-700">{clickCounts.countMap?.eye || 0}</span>
-            </div>
-          </div>
-
-          <div className="w-full block pt-6">
-            { buyers.size ? `Number of Holders: ${buyers.size}` : `Number of Holders: Loading...` }
           </div>
         </div>
       </div>
-
       <div ref={bottomRef} className="w-full flex justify-center mt-4">
         <span className="text-sm bg-transparent text-white cursor-pointer" onClick={scrollToTop}>
           [scroll up]
